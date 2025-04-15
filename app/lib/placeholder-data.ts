@@ -4,6 +4,7 @@ const users = [
     name: 'Tyler Durden',
     email: 'admin@fc.com',
     password: '123456',
+    role: 'admin',
   },
 ];
 
