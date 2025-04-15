@@ -1,4 +1,5 @@
 import { LoginForm } from '@/app/components/login-form';
+import { Suspense } from 'react';
 
 export default function Home() {
   return (
@@ -7,7 +8,9 @@ export default function Home() {
         FIGHT CLUB
       </h1>
       <div className="w-full max-w-sm">
-        <LoginForm />
+        <Suspense>
+          <LoginForm />
+        </Suspense>
       </div>
     </main>
   );
