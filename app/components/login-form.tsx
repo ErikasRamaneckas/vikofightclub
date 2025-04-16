@@ -67,7 +67,7 @@ export function LoginForm({
               />
               <Button
                 type="submit"
-                className="w-full bg-pink-500"
+                className="w-full bg-pink-500 hover:bg-pink-600"
                 aria-disabled={isPending}
               >
                 Login
