@@ -1,6 +1,7 @@
 import { fetchFilteredFighters } from '@/app/lib/data';
 import Image from 'next/image';
 import { DeleteFighter, UpdateFighter } from './buttons';
+import { auth } from '@/auth';
 
 export default async function FightersTable({
   query,
@@ -9,6 +10,9 @@ export default async function FightersTable({
   query: string;
   currentPage: number;
 }) {
+  const session = await auth();
+  const isAdmin = session?.user?.role === 'admin';
+
   const fighters = await fetchFilteredFighters(query, currentPage);
 
   return (
@@ -43,9 +47,12 @@ export default async function FightersTable({
                       {fighter.weight}
                     </p>
                   </div>
-                  <div className="flex justify-end gap-2">
-                    <DeleteFighter id={fighter.id} />
-                  </div>
+                  {isAdmin && (
+                    <div className="flex justify-end gap-2">
+                      <UpdateFighter id={fighter.id} />
+                      <DeleteFighter id={fighter.id} />
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
@@ -97,12 +104,14 @@ export default async function FightersTable({
                   <td className="whitespace-nowrap px-3 py-3">
                     {fighter.weight}
                   </td>
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <div className="flex justify-end gap-3">
-                      <UpdateFighter id={fighter.id} />
-                      <DeleteFighter id={fighter.id} />
-                    </div>
-                  </td>
+                  {isAdmin && (
+                    <td className="whitespace-nowrap py-3 pl-6 pr-3">
+                      <div className="flex justify-end gap-3">
+                        <UpdateFighter id={fighter.id} />
+                        <DeleteFighter id={fighter.id} />
+                      </div>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>

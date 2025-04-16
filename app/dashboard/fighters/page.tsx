@@ -6,6 +6,7 @@ import { Suspense } from 'react';
 import Pagination from '@/app/components/fighters/pagination';
 import { CreateFighter } from '@/app/components/fighters/buttons';
 import { FightersTableSkeleton } from '@/app/components/skeletons';
+import { auth } from '@/auth';
 
 export const metadata: Metadata = {
   title: 'Fighters',
@@ -17,6 +18,8 @@ export default async function Page(props: {
     page?: string;
   }>;
 }) {
+  const session = await auth();
+  const isAdmin = session?.user?.role === 'admin';
   const searchParams = await props.searchParams;
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
@@ -30,7 +33,7 @@ export default async function Page(props: {
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Search fighters..." />
-        <CreateFighter />
+        {isAdmin && <CreateFighter />}
       </div>
       <Suspense
         key={query + currentPage}
