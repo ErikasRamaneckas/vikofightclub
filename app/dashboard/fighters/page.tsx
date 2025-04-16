@@ -7,6 +7,7 @@ import Pagination from '@/app/components/fighters/pagination';
 import { CreateFighter } from '@/app/components/fighters/buttons';
 import { FightersTableSkeleton } from '@/app/components/skeletons';
 import { auth } from '@/auth';
+import WeightClassFilter from '@/app/components/filter';
 
 export const metadata: Metadata = {
   title: 'Fighters',
@@ -17,6 +18,7 @@ export default async function Page(props: {
     query?: string;
     page?: string;
     sort?: string;
+    weightClass?: string;
   }>;
 }) {
   const session = await auth();
@@ -24,6 +26,8 @@ export default async function Page(props: {
   const searchParams = await props.searchParams;
   const query = searchParams?.query || '';
   const sort = searchParams?.sort || 'height-desc';
+  const weightClass = searchParams?.weightClass || '';
+
   const currentPage = Number(searchParams?.page) || 1;
 
   const totalPages = await fetchFightersPages(query);
@@ -35,6 +39,7 @@ export default async function Page(props: {
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Search fighters..." />
+        <WeightClassFilter />
         {isAdmin && <CreateFighter />}
       </div>
       <Suspense
@@ -45,6 +50,7 @@ export default async function Page(props: {
           query={query}
           currentPage={currentPage}
           sort={sort}
+          weightClass={weightClass}
         />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">

@@ -8,17 +8,20 @@ export default async function FightersTable({
   query,
   currentPage,
   sort,
+  weightClass,
 }: {
   query: string;
   currentPage: number;
   sort: string;
+  weightClass: string;
 }) {
   const session = await auth();
   const isAdmin = session?.user?.role === 'admin';
   const fighters = await fetchFilteredFighters(
     query,
     currentPage,
-    sort
+    sort,
+    weightClass
   );
 
   return (

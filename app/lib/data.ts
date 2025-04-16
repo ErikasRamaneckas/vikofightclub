@@ -5,7 +5,8 @@ const ITEMS_PER_PAGE = 5;
 export async function fetchFilteredFighters(
   query: string,
   currentPage: number,
-  sort?: string
+  sort?: string,
+  weightClass?: string
 ) {
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
@@ -21,7 +22,7 @@ export async function fetchFilteredFighters(
   }
 
   try {
-    const queryStr = `
+    let queryStr = `
       SELECT
         id,
         name,
@@ -32,15 +33,26 @@ export async function fetchFilteredFighters(
       FROM users
       WHERE
         name ILIKE $1
+    `;
+    const queryParams = [`%${query}%`];
+
+    if (weightClass) {
+      if (weightClass === 'light') {
+        queryStr += ` AND weight < 70`;
+      } else if (weightClass === 'middle') {
+        queryStr += ` AND weight BETWEEN 71 AND 85`;
+      } else if (weightClass === 'heavy') {
+        queryStr += ` AND weight > 85`;
+      }
+    }
+
+    queryStr += `
       ORDER BY ${orderByClause}
       LIMIT $2 OFFSET $3
     `;
-    const result = await sql.query(queryStr, [
-      `%${query}%`,
-      ITEMS_PER_PAGE,
-      offset,
-    ]);
-    console.log('Query result rows:', result.rows); // Log results for debugging
+    const finalQueryParams = [...queryParams, ITEMS_PER_PAGE, offset];
+
+    const result = await sql.query(queryStr, finalQueryParams);
     return result.rows;
   } catch (error) {
     console.error('Database Error:', error);
@@ -48,14 +60,30 @@ export async function fetchFilteredFighters(
   }
 }
 
-export async function fetchFightersPages(query: string) {
+export async function fetchFightersPages(
+  query: string,
+  weightClass?: string
+) {
   try {
-    const result = await sql`
-    SELECT COUNT(*)
-    FROM users
-    WHERE
-      name ILIKE ${`%${query}%`}
+    let queryStr = `
+      SELECT COUNT(*)
+      FROM users
+      WHERE
+        name ILIKE $1
     `;
+    const queryParams = [`%${query}%`];
+
+    if (weightClass) {
+      if (weightClass === 'light') {
+        queryStr += ` AND weight < 70`;
+      } else if (weightClass === 'middle') {
+        queryStr += ` AND weight BETWEEN 71 AND 85`;
+      } else if (weightClass === 'heavy') {
+        queryStr += ` AND weight > 85`;
+      }
+    }
+
+    const result = await sql.query(queryStr, queryParams);
     const totalPages = Math.ceil(
       Number(result.rows[0].count) / ITEMS_PER_PAGE
     );
