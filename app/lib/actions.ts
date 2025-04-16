@@ -1,6 +1,9 @@
 'use server';
 import { signIn } from '@/auth';
 import { AuthError } from 'next-auth';
+import { sql } from '@vercel/postgres';
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 
 export async function authenticate(
   prevState: string | undefined,
@@ -19,4 +22,9 @@ export async function authenticate(
     }
     throw error;
   }
+}
+
+export async function deleteFighter(id: string) {
+  await sql`DELETE FROM users WHERE id = ${id}`;
+  revalidatePath('/dashboard/fighters');
 }
