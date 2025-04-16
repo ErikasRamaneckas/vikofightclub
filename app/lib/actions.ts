@@ -2,7 +2,9 @@
 import { signIn } from '@/auth';
 import { AuthError } from 'next-auth';
 import { sql } from '@vercel/postgres';
+import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
+import bcrypt from 'bcryptjs';
 import { redirect } from 'next/navigation';
 
 export async function authenticate(
@@ -22,6 +24,86 @@ export async function authenticate(
     }
     throw error;
   }
+}
+
+const FormSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  email: z.string(),
+  password: z.string(),
+  role: z.enum(['user', 'admin'], {
+    invalid_type_error: 'Please select a role.',
+  }),
+  image_url: z.string(),
+  height: z.coerce.number().gt(100).lt(250),
+  weight: z.coerce.number().gt(30).lt(250),
+});
+
+const CreateFighter = FormSchema.omit({ id: true });
+
+export type FighterState = {
+  errors?: {
+    name?: string[];
+    email?: string[];
+    password?: string[];
+    role?: string[];
+    image_url?: string[];
+    height?: string[];
+    weight?: string[];
+  };
+  message?: string | null;
+};
+
+export async function createFighter(
+  prevState: FighterState,
+  formData: FormData
+) {
+  const validatedFields = CreateFighter.safeParse({
+    name: formData.get('name'),
+    email: formData.get('email'),
+    password: formData.get('password'),
+    role: formData.get('role'),
+    image_url: formData.get('image_url'),
+    height: formData.get('height'),
+    weight: formData.get('weight'),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing fields. Failed to create user',
+    };
+  }
+
+  const { name, email, password, role, image_url, height, weight } =
+    validatedFields.data;
+
+  const { rows: existingUser } = await sql`
+    SELECT * FROM users WHERE email = ${email}
+  `;
+
+  if (existingUser.length > 0) {
+    return {
+      message: 'Email already in use.',
+    };
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  try {
+    await sql`
+      INSERT INTO users (name, email, password, role, image_url, height, weight)
+      VALUES (${name}, ${email}, ${hashedPassword}, ${role}, ${image_url}, ${height}, ${weight})
+    `;
+  } catch (error) {
+    console.error(error);
+    return {
+      message: 'Database error: Failed to create user',
+    };
+  }
+
+  revalidatePath('/dashboard/fighters');
+  redirect('/dashboard/fighters');
 }
 
 export async function deleteFighter(id: string) {

@@ -4,6 +4,7 @@ import { fetchFightersPages } from '@/app/lib/data';
 import Search from '@/app/components/search';
 import { Suspense } from 'react';
 import Pagination from '@/app/components/fighters/pagination';
+import { CreateFighter } from '@/app/components/fighters/buttons';
 
 export const metadata: Metadata = {
   title: 'Fighters',
@@ -28,6 +29,7 @@ export default async function Page(props: {
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Search fighters..." />
+        <CreateFighter />
       </div>
       <Suspense>
         <FightersTable query={query} currentPage={currentPage} />
