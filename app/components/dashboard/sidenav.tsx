@@ -15,7 +15,15 @@ export default function SideNav() {
           src="/FightClubSoapLogo.webp"
           width={200}
           height={200}
-          alt="Soap Logo of Fight Club"
+          alt="Desktop Soap Logo of Fight Club"
+          className="hidden md:block"
+        />
+        <Image
+          src="/FightClubSoapLogo.webp"
+          width={80}
+          height={80}
+          alt="Mobile Soap Logo of Fight Club"
+          className="block md:hidden"
         />
       </Link>
       <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">
