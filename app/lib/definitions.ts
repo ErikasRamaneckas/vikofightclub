@@ -5,3 +5,8 @@ export type User = {
   password: string;
   role: 'admin' | 'user';
 };
+
+export type FightersTableType = {
+  id: string;
+  name: string;
+};
