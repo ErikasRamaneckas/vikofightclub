@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
-import { CircleUserRound, House } from 'lucide-react';
+import { CircleUserRound, House, Upload } from 'lucide-react';
 
 const links = [
   { name: 'Home', href: '/dashboard', icon: House },
@@ -11,6 +11,11 @@ const links = [
     name: 'Fighters',
     href: '/dashboard/fighters',
     icon: CircleUserRound,
+  },
+  {
+    name: 'File Upload',
+    href: '/dashboard/file-upload',
+    icon: Upload,
   },
 ];
 export default function NavLinks() {
