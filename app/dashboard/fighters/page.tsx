@@ -5,6 +5,7 @@ import Search from '@/app/components/search';
 import { Suspense } from 'react';
 import Pagination from '@/app/components/fighters/pagination';
 import { CreateFighter } from '@/app/components/fighters/buttons';
+import { FightersTableSkeleton } from '@/app/components/skeletons';
 
 export const metadata: Metadata = {
   title: 'Fighters',
@@ -31,7 +32,10 @@ export default async function Page(props: {
         <Search placeholder="Search fighters..." />
         <CreateFighter />
       </div>
-      <Suspense>
+      <Suspense
+        key={query + currentPage}
+        fallback={<FightersTableSkeleton />}
+      >
         <FightersTable query={query} currentPage={currentPage} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">

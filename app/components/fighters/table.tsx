@@ -27,8 +27,8 @@ export default async function FightersTable({
                       <Image
                         src={fighter.image_url}
                         className="mr-2 rounded-full"
-                        width={64}
-                        height={64}
+                        width={28}
+                        height={28}
                         alt={`${fighter.name}'s profile picture`}
                       />
                       <p>{fighter.name}</p>
@@ -81,8 +81,8 @@ export default async function FightersTable({
                       <Image
                         src={fighter.image_url}
                         className="rounded-full"
-                        width={64}
-                        height={64}
+                        width={28}
+                        height={28}
                         alt={`${fighter.name}'s profile picture`}
                       />
                       <p>{fighter.name}</p>
