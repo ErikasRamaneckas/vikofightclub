@@ -4,9 +4,7 @@ export type User = {
   email: string;
   password: string;
   role: 'admin' | 'user';
-};
-
-export type FightersTableType = {
-  id: string;
-  name: string;
+  image_url: string;
+  height: number;
+  weight: number;
 };

@@ -11,7 +11,11 @@ export async function fetchFilteredFighters(
     const result = await sql`
     SELECT
       id,
-      name
+      name,
+      email,
+      image_url,
+      height,
+      weight
     FROM users
     WHERE
       name ILIKE ${`%${query}%`}

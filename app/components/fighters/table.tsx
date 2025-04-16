@@ -23,18 +23,24 @@ export default async function FightersTable({
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
                     <div className="mb-2 flex items-center">
-                      {/* <Image
+                      <Image
                         src={fighter.image_url}
                         className="mr-2 rounded-full"
-                        width={28}
-                        height={28}
+                        width={64}
+                        height={64}
                         alt={`${fighter.name}'s profile picture`}
-                      /> */}
+                      />
                       <p>{fighter.name}</p>
                     </div>
-                    {/* <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500">
                       {fighter.email}
-                    </p> */}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {fighter.height}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {fighter.weight}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -49,9 +55,15 @@ export default async function FightersTable({
                 >
                   Fighter
                 </th>
-                {/* <th scope="col" className="px-3 py-5 font-medium">
+                <th scope="col" className="px-3 py-5 font-medium">
                   Email
-                </th> */}
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Height (cm)
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Weight (kg)
+                </th>
               </tr>
             </thead>
             <tbody className="bg-white">
@@ -62,19 +74,25 @@ export default async function FightersTable({
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
-                      {/* <Image
+                      <Image
                         src={fighter.image_url}
                         className="rounded-full"
-                        width={28}
-                        height={28}
+                        width={64}
+                        height={64}
                         alt={`${fighter.name}'s profile picture`}
-                      /> */}
+                      />
                       <p>{fighter.name}</p>
                     </div>
                   </td>
-                  {/* <td className="whitespace-nowrap px-3 py-3">
+                  <td className="whitespace-nowrap px-3 py-3">
                     {fighter.email}
-                  </td> */}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {fighter.height}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {fighter.weight}
+                  </td>
                 </tr>
               ))}
             </tbody>
