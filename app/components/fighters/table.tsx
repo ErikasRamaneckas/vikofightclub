@@ -2,18 +2,24 @@ import { fetchFilteredFighters } from '@/app/lib/data';
 import Image from 'next/image';
 import { DeleteFighter, UpdateFighter } from './buttons';
 import { auth } from '@/auth';
+import SortToggle from '../sort-toggle';
 
 export default async function FightersTable({
   query,
   currentPage,
+  sort,
 }: {
   query: string;
   currentPage: number;
+  sort: string;
 }) {
   const session = await auth();
   const isAdmin = session?.user?.role === 'admin';
-
-  const fighters = await fetchFilteredFighters(query, currentPage);
+  const fighters = await fetchFilteredFighters(
+    query,
+    currentPage,
+    sort
+  );
 
   return (
     <div className="mt-6 flow-root">
@@ -71,9 +77,14 @@ export default async function FightersTable({
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Height (cm)
+                  <SortToggle field="height" currentSort={sort} />
                 </th>
-                <th scope="col" className="px-3 py-5 font-medium">
+                <th
+                  scope="col"
+                  className="my-auto px-3 py-5 font-medium"
+                >
                   Weight (kg)
+                  <SortToggle field="weight" currentSort={sort} />
                 </th>
               </tr>
             </thead>

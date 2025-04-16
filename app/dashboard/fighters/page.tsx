@@ -16,12 +16,14 @@ export default async function Page(props: {
   searchParams?: Promise<{
     query?: string;
     page?: string;
+    sort?: string;
   }>;
 }) {
   const session = await auth();
   const isAdmin = session?.user?.role === 'admin';
   const searchParams = await props.searchParams;
   const query = searchParams?.query || '';
+  const sort = searchParams?.sort || 'height-desc';
   const currentPage = Number(searchParams?.page) || 1;
 
   const totalPages = await fetchFightersPages(query);
@@ -39,7 +41,11 @@ export default async function Page(props: {
         key={query + currentPage}
         fallback={<FightersTableSkeleton />}
       >
-        <FightersTable query={query} currentPage={currentPage} />
+        <FightersTable
+          query={query}
+          currentPage={currentPage}
+          sort={sort}
+        />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={totalPages} />

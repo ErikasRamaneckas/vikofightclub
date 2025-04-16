@@ -10,7 +10,7 @@ export default async function Page() {
     unauthorized();
   }
   return (
-    <div className="max-w-md mx-auto w-full">
+    <div className="max-w-lg mx-auto w-full">
       <Toaster />
       <Uploader />
     </div>
