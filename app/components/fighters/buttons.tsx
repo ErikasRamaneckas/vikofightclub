@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { deleteFighter } from '@/app/lib/actions';
-import { Plus, Trash2 } from 'lucide-react';
+import { Pencil, Plus, Trash2 } from 'lucide-react';
 
 export function CreateFighter() {
   return (
@@ -10,6 +10,17 @@ export function CreateFighter() {
     >
       <span className="hidden md:block">Create Fighter </span>{' '}
       <Plus />
+    </Link>
+  );
+}
+
+export function UpdateFighter({ id }: { id: string }) {
+  return (
+    <Link
+      href={`/dashboard/fighters/${id}/edit`}
+      className="rounded-md border p-2 hover:bg-gray-100"
+    >
+      <Pencil />
     </Link>
   );
 }

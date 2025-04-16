@@ -1,6 +1,7 @@
 import { sql } from '@vercel/postgres';
+import { User } from './definitions';
 
-const ITEMS_PER_PAGE = 2;
+const ITEMS_PER_PAGE = 5;
 export async function fetchFilteredFighters(
   query: string,
   currentPage: number
@@ -44,5 +45,20 @@ export async function fetchFightersPages(query: string) {
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch total number of fighters');
+  }
+}
+
+export async function fetchFighterById(id: string) {
+  try {
+    const result = await sql`
+    SELECT *
+    FROM users
+    WHERE
+      id = ${id}
+    `;
+    return result.rows[0] as User;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch fighters.');
   }
 }

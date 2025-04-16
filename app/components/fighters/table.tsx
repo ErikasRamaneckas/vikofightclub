@@ -1,6 +1,6 @@
 import { fetchFilteredFighters } from '@/app/lib/data';
 import Image from 'next/image';
-import { DeleteFighter } from './buttons';
+import { DeleteFighter, UpdateFighter } from './buttons';
 
 export default async function FightersTable({
   query,
@@ -99,6 +99,7 @@ export default async function FightersTable({
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
+                      <UpdateFighter id={fighter.id} />
                       <DeleteFighter id={fighter.id} />
                     </div>
                   </td>

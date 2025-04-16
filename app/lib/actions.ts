@@ -40,6 +40,7 @@ const FormSchema = z.object({
 });
 
 const CreateFighter = FormSchema.omit({ id: true });
+const UpdateFighter = FormSchema.omit({ id: true });
 
 export type FighterState = {
   errors?: {
@@ -100,6 +101,63 @@ export async function createFighter(
     return {
       message: 'Database error: Failed to create user',
     };
+  }
+
+  revalidatePath('/dashboard/fighters');
+  redirect('/dashboard/fighters');
+}
+
+export async function updateFighter(
+  id: string,
+  prevState: FighterState,
+  formData: FormData
+) {
+  const validatedFields = CreateFighter.safeParse({
+    name: formData.get('name'),
+    email: formData.get('email'),
+    password: formData.get('password'),
+    role: formData.get('role'),
+    image_url: formData.get('image_url'),
+    height: formData.get('height'),
+    weight: formData.get('weight'),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Update Fighter.',
+    };
+  }
+
+  const { name, email, password, role, image_url, height, weight } =
+    validatedFields.data;
+
+  try {
+    const { rows: emailInUse } = await sql`
+      SELECT * FROM users WHERE email = ${email} AND id != ${id}
+    `;
+
+    if (emailInUse.length > 0) {
+      return {
+        message: 'Email already in use by another user.',
+      };
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await sql`
+      UPDATE users
+      SET name = ${name},
+          email = ${email},
+          password = ${hashedPassword},
+          role = ${role},
+          image_url = ${image_url},
+          height = ${height},
+          weight = ${weight}
+      WHERE id = ${id}
+    `;
+  } catch (error) {
+    return { message: 'Database Error: Failed to Update user' };
   }
 
   revalidatePath('/dashboard/fighters');

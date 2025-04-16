@@ -1,8 +1,9 @@
 'use client';
 
+import { User } from '@/app/lib/definitions';
 import Link from 'next/link';
 // import { Button } from '@/app/ui/button';
-import { createFighter, FighterState } from '@/app/lib/actions';
+import { updateFighter, FighterState } from '@/app/lib/actions';
 import { useActionState } from 'react';
 import {
   AtSign,
@@ -14,10 +15,15 @@ import {
   Weight,
 } from 'lucide-react';
 
-export default function Form() {
+export default function EditFighterForm({
+  fighter,
+}: {
+  fighter: User;
+}) {
   const initialState: FighterState = { message: null, errors: {} };
+  const updateFighterWithId = updateFighter.bind(null, fighter.id);
   const [state, formAction] = useActionState(
-    createFighter,
+    updateFighterWithId,
     initialState
   );
 
@@ -39,6 +45,7 @@ export default function Form() {
                 type="text"
                 placeholder="Enter name"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                defaultValue={fighter.name}
                 aria-describedby="name-error"
               />
               <SquareUser className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
@@ -69,6 +76,7 @@ export default function Form() {
                 type="email"
                 placeholder="Enter email"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                defaultValue={fighter.email}
                 aria-describedby="email-error"
               />
               <AtSign className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
@@ -99,6 +107,7 @@ export default function Form() {
                 type="text"
                 placeholder="Enter password"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                defaultValue={fighter.password}
                 aria-describedby="password-error"
               />
               <Lock className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
@@ -131,6 +140,7 @@ export default function Form() {
                 id="role"
                 name="role"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                defaultValue={fighter.role}
               >
                 <option value="user">User</option>
                 <option value="admin">Admin</option>
@@ -163,6 +173,7 @@ export default function Form() {
                 type="text"
                 placeholder="Enter image URL"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                defaultValue={fighter.image_url}
                 aria-describedby="image_url-error"
               />
               <ImageUp className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
@@ -198,6 +209,7 @@ export default function Form() {
                 step="1"
                 placeholder="Enter height"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                defaultValue={fighter.height}
                 aria-describedby="height-error"
               />
               <Ruler className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
@@ -233,6 +245,7 @@ export default function Form() {
                 step="1"
                 placeholder="Enter weight"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                defaultValue={fighter.weight}
                 aria-describedby="weight-error"
               />
               <Weight className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
@@ -261,7 +274,7 @@ export default function Form() {
         >
           Cancel
         </Link>
-        <button type="submit">Create Fighter</button>
+        <button type="submit">Edit Fighter</button>
       </div>
     </form>
   );
