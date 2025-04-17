@@ -108,3 +108,100 @@ export async function fetchFighterById(id: string) {
     throw new Error('Failed to fetch fighters.');
   }
 }
+
+const FIGHTS_PER_PAGE = 2;
+
+export async function fetchFights(
+  currentPage: number,
+  query: string = ''
+) {
+  const offset = (currentPage - 1) * FIGHTS_PER_PAGE;
+
+  try {
+    const result = await sql`
+      WITH matching_fights AS (
+        SELECT DISTINCT f.id
+        FROM fights f
+        JOIN fighter_fights ff ON f.id = ff.fight_id
+        JOIN users u ON ff.fighter_id = u.id
+        WHERE u.name ILIKE ${'%' + query + '%'}
+      ),
+      paged_fights AS (
+        SELECT f.id, f.location, f.date
+        FROM fights f
+        WHERE f.id IN (SELECT id FROM matching_fights)
+        ORDER BY f.date DESC
+        LIMIT ${FIGHTS_PER_PAGE}
+        OFFSET ${offset}
+      )
+      SELECT
+        f.id AS fight_id,
+        f.location,
+        f.date,
+        u.id AS fighter_id,
+        u.name AS fighter_name,
+        u.image_url,
+        ff.result
+      FROM paged_fights f
+      JOIN fighter_fights ff ON f.id = ff.fight_id
+      JOIN users u ON ff.fighter_id = u.id
+      ORDER BY f.date DESC;
+    `;
+
+    const groupedFights: Record<string, any> = {};
+
+    result.rows.forEach((row) => {
+      const {
+        fight_id,
+        location,
+        date,
+        fighter_id,
+        fighter_name,
+        image_url,
+        result,
+      } = row;
+
+      if (!groupedFights[fight_id]) {
+        groupedFights[fight_id] = {
+          id: fight_id,
+          location,
+          date,
+          fighters: [],
+        };
+      }
+
+      groupedFights[fight_id].fighters.push({
+        id: fighter_id,
+        name: fighter_name,
+        image_url,
+        result,
+      });
+    });
+
+    return Object.values(groupedFights);
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch fights.');
+  }
+}
+
+export async function fetchFightsPages(query: string = '') {
+  try {
+    const result = await sql`
+      SELECT COUNT(DISTINCT f.id) AS count
+      FROM fights f
+      JOIN fighter_fights ff ON f.id = ff.fight_id
+      JOIN users u ON ff.fighter_id = u.id
+      WHERE u.name ILIKE ${'%' + query + '%'};
+    `;
+
+    const totalPages = Math.ceil(
+      Number(result.rows[0].count) / FIGHTS_PER_PAGE
+    );
+
+    return totalPages;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total number of fights');
+  }
+}

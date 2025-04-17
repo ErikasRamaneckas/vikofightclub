@@ -8,3 +8,14 @@ export type User = {
   height: number;
   weight: number;
 };
+
+export type FighterInFight = User & {
+  result: 'win' | 'loss';
+};
+
+export type Fight = {
+  id: string;
+  location: string;
+  date: string;
+  fighters: FighterInFight[];
+};

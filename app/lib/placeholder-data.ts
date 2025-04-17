@@ -15,7 +15,7 @@ const users = [
     email: 'thenarrator@fc.com',
     password: 'password1',
     role: 'user',
-    image_url: '/fighters/the-narrator.jpg',
+    image_url: '/fighters/the-narrator.webp',
     height: 183,
     weight: 73,
   },
@@ -51,4 +51,31 @@ const users = [
   },
 ];
 
-export { users };
+const fights = [
+  {
+    location: 'Basement',
+    date: '2025-01-12',
+    fighters: [
+      { userId: users[0].id, result: 'win' },
+      { userId: users[1].id, result: 'loss' },
+    ],
+  },
+  {
+    location: 'Parking Garage',
+    date: '2025-01-10',
+    fighters: [
+      { userId: users[2].id, result: 'win' },
+      { userId: users[3].id, result: 'loss' },
+    ],
+  },
+  {
+    location: 'Bar Backroom',
+    date: '2025-01-11',
+    fighters: [
+      { userId: users[4].id, result: 'win' },
+      { userId: users[1].id, result: 'loss' },
+    ],
+  },
+];
+
+export { users, fights };
