@@ -1,6 +1,7 @@
 import { fetchFights } from '@/app/lib/data';
 import { FighterInFight } from '@/app/lib/definitions';
 import { DeleteFight, UpdateFight } from './buttons';
+import { auth } from '@/auth';
 
 export default async function FightsTable({
   query,
@@ -9,6 +10,8 @@ export default async function FightsTable({
   query: string;
   currentPage: number;
 }) {
+  const session = await auth();
+  const isAdmin = session?.user?.role === 'admin';
   const fights = await fetchFights(currentPage, query);
 
   return (
@@ -51,6 +54,12 @@ export default async function FightsTable({
                     </li>
                   ))}
                 </ul>
+                {isAdmin && (
+                  <div className="flex justify-end gap-2">
+                    <UpdateFight id={fight.id} />
+                    <DeleteFight id={fight.id} />
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -102,12 +111,14 @@ export default async function FightsTable({
                       )}
                     </ul>
                   </td>
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <div className="flex justify-end gap-3">
-                      <UpdateFight id={fight.id} />
-                      <DeleteFight id={fight.id} />
-                    </div>
-                  </td>
+                  {isAdmin && (
+                    <td className="whitespace-nowrap py-3 pl-6 pr-3">
+                      <div className="flex justify-end gap-3">
+                        <UpdateFight id={fight.id} />
+                        <DeleteFight id={fight.id} />
+                      </div>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>
