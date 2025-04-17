@@ -112,7 +112,7 @@ export async function updateFighter(
   prevState: FighterState,
   formData: FormData
 ) {
-  const validatedFields = CreateFighter.safeParse({
+  const validatedFields = UpdateFighter.safeParse({
     name: formData.get('name'),
     email: formData.get('email'),
     password: formData.get('password'),
@@ -167,4 +167,88 @@ export async function updateFighter(
 export async function deleteFighter(id: string) {
   await sql`DELETE FROM users WHERE id = ${id}`;
   revalidatePath('/dashboard/fighters');
+}
+
+const FightFormSchema = z.object({
+  location: z.string().min(1),
+  date: z.string().date(),
+  fighters: z
+    .array(
+      z.object({
+        fighter_id: z.string().uuid(),
+        result: z.enum(['win', 'loss', 'draw']),
+      })
+    )
+    .min(2, 'At least two fighters required'),
+});
+
+export type FightState = {
+  errors?: {
+    location?: string[];
+    date?: string[];
+    fighters?: string[];
+  };
+  message?: string | null;
+};
+
+export async function createFight(
+  prevState: FightState,
+  formData: FormData
+) {
+  const location = formData.get('location');
+  const date = formData.get('date');
+
+  const fightersRaw = formData.get('fighters') as string;
+  let fighters;
+  try {
+    fighters = JSON.parse(fightersRaw);
+  } catch {
+    return {
+      message: 'Invalid fighters format',
+    };
+  }
+
+  const validated = FightFormSchema.safeParse({
+    location,
+    date,
+    fighters,
+  });
+
+  if (!validated.success) {
+    return {
+      errors: validated.error.flatten().fieldErrors,
+      message: 'Validation failed.',
+    };
+  }
+
+  const {
+    location: validLocation,
+    date: validDate,
+    fighters: validFighters,
+  } = validated.data;
+
+  try {
+    const result = await sql`
+      INSERT INTO fights (location, date)
+      VALUES (${validLocation}, ${validDate})
+      RETURNING id;
+    `;
+
+    const fightId = result.rows[0].id;
+
+    for (const fighter of validFighters) {
+      await sql`
+        INSERT INTO fighter_fights (fight_id, fighter_id, result)
+        VALUES (${fightId}, ${fighter.fighter_id}, ${fighter.result});
+      `;
+    }
+  } catch (error) {
+    console.error(error);
+    return {
+      message: 'Database error: Failed to create fight.',
+    };
+  }
+
+  revalidatePath('/dashboard/fights');
+  redirect('/dashboard/fights');
 }
