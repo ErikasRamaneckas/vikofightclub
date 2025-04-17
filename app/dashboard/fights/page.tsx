@@ -14,12 +14,14 @@ export default async function FightsPage(props: {
   searchParams?: Promise<{
     query?: string;
     page?: string;
+    sort?: string;
   }>;
 }) {
   const session = await auth();
   const isAdmin = session?.user?.role === 'admin';
   const searchParams = await props.searchParams;
   const query = searchParams?.query || '';
+  const sort = searchParams?.sort || 'date-desc';
   const currentPage = Number(searchParams?.page) || 1;
 
   const totalPages = await fetchFightsPages(query);
@@ -27,10 +29,14 @@ export default async function FightsPage(props: {
     <div className="w-full">
       <h1 className="text-2xl mb-4">Fights</h1>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Search placeholder="Search by fighter name" />
+        <Search placeholder="Search fighters..." />
         {isAdmin && <CreateFight />}
       </div>
-      <FightsTable query={query} currentPage={currentPage} />
+      <FightsTable
+        query={query}
+        currentPage={currentPage}
+        sort={sort}
+      />
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={totalPages} />
       </div>

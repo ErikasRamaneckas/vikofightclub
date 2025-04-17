@@ -11,7 +11,7 @@ export default function SortToggle({
   field,
   currentSort,
 }: {
-  field: 'height' | 'weight';
+  field: 'height' | 'weight' | 'date';
   currentSort: string;
 }) {
   const router = useRouter();

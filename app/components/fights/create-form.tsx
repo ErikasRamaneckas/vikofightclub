@@ -26,9 +26,7 @@ export default function CreateFightForm() {
       { fighter_id: fighter2, result: 'loss' },
     ];
 
-    if (winner === 'draw') {
-      results = results.map((r) => ({ ...r, result: 'draw' }));
-    } else if (winner === fighter1) {
+    if (winner === fighter1) {
       results = [
         { fighter_id: fighter1, result: 'win' },
         { fighter_id: fighter2, result: 'loss' },
@@ -176,7 +174,6 @@ export default function CreateFightForm() {
                   {user.name}
                 </option>
               ))}
-            <option value="draw">Draw</option>
           </select>
         </div>
       </div>

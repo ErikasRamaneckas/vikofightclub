@@ -128,30 +128,34 @@ export async function fetchFighterById(id: string) {
   }
 }
 
-const FIGHTS_PER_PAGE = 2;
+const FIGHTS_PER_PAGE = 5;
 
 export async function fetchFights(
   currentPage: number,
-  query: string = ''
+  query: string = '',
+  sort: string
 ) {
   const offset = (currentPage - 1) * FIGHTS_PER_PAGE;
 
+  const orderByClause =
+    sort === 'date-asc' ? 'f.date ASC' : 'f.date DESC';
+
   try {
-    const result = await sql`
+    const queryStr = `
       WITH matching_fights AS (
         SELECT DISTINCT f.id
         FROM fights f
         JOIN fighter_fights ff ON f.id = ff.fight_id
         JOIN users u ON ff.fighter_id = u.id
-        WHERE u.name ILIKE ${'%' + query + '%'}
+        WHERE u.name ILIKE $1
       ),
       paged_fights AS (
         SELECT f.id, f.location, f.date
         FROM fights f
         WHERE f.id IN (SELECT id FROM matching_fights)
-        ORDER BY f.date DESC
-        LIMIT ${FIGHTS_PER_PAGE}
-        OFFSET ${offset}
+        ORDER BY ${orderByClause}
+        LIMIT $2
+        OFFSET $3
       )
       SELECT
         f.id AS fight_id,
@@ -164,8 +168,14 @@ export async function fetchFights(
       FROM paged_fights f
       JOIN fighter_fights ff ON f.id = ff.fight_id
       JOIN users u ON ff.fighter_id = u.id
-      ORDER BY f.date DESC;
+      ORDER BY ${orderByClause};
     `;
+
+    const result = await sql.query(queryStr, [
+      `%${query}%`,
+      FIGHTS_PER_PAGE,
+      offset,
+    ]);
 
     const groupedFights: Record<string, any> = {};
 

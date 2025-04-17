@@ -33,7 +33,7 @@ export default function EditFightForm({
   );
   const [winner, setWinner] = useState(() => {
     const win = fight.fighters.find((f: any) => f.result === 'win');
-    return win ? win.id : 'draw';
+    return win.id;
   });
 
   const fightersInputRef = useRef<HTMLInputElement>(null);
@@ -46,9 +46,7 @@ export default function EditFightForm({
       { fighter_id: fighter2, result: 'loss' },
     ];
 
-    if (winner === 'draw') {
-      results = results.map((r) => ({ ...r, result: 'draw' }));
-    } else if (winner === fighter1) {
+    if (winner === fighter1) {
       results = [
         { fighter_id: fighter1, result: 'win' },
         { fighter_id: fighter2, result: 'loss' },

@@ -2,17 +2,20 @@ import { fetchFights } from '@/app/lib/data';
 import { FighterInFight } from '@/app/lib/definitions';
 import { DeleteFight, UpdateFight } from './buttons';
 import { auth } from '@/auth';
+import SortToggle from '../sort-toggle';
 
 export default async function FightsTable({
   query,
   currentPage,
+  sort,
 }: {
   query: string;
   currentPage: number;
+  sort: string;
 }) {
   const session = await auth();
   const isAdmin = session?.user?.role === 'admin';
-  const fights = await fetchFights(currentPage, query);
+  const fights = await fetchFights(currentPage, query, sort);
 
   return (
     <div className="mt-6 flow-root">
@@ -35,6 +38,7 @@ export default async function FightsTable({
                         day: '2-digit',
                       }
                     )}
+                    <SortToggle field="date" currentSort={sort} />
                   </p>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
                     {fight.location}
@@ -75,7 +79,9 @@ export default async function FightsTable({
           <table className="hidden min-w-full text-gray-900 md:table dark:text-gray-100">
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
-                <th className="px-3 py-5 font-medium">Date</th>
+                <th className="px-3 py-5 font-medium">
+                  Date <SortToggle field="date" currentSort={sort} />{' '}
+                </th>
                 <th className="px-3 py-5 font-medium">Location</th>
                 <th className="px-3 py-5 font-medium">Fighters</th>
                 <th className="px-3 py-5 font-medium"></th>
