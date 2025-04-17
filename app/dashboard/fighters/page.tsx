@@ -2,12 +2,11 @@ import FightersTable from '@/app/components/fighters/table';
 import { Metadata } from 'next';
 import { fetchFightersPages } from '@/app/lib/data';
 import Search from '@/app/components/search';
-import { Suspense } from 'react';
 import Pagination from '@/app/components/fighters/pagination';
 import { CreateFighter } from '@/app/components/fighters/buttons';
-import { FightersTableSkeleton } from '@/app/components/skeletons';
 import { auth } from '@/auth';
 import WeightClassFilter from '@/app/components/filter';
+import ClearFiltersButton from '@/app/components/clear';
 
 export const metadata: Metadata = {
   title: 'Fighters',
@@ -39,20 +38,16 @@ export default async function Page(props: {
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Search fighters..." />
+        <ClearFiltersButton />
         <WeightClassFilter />
         {isAdmin && <CreateFighter />}
       </div>
-      <Suspense
-        key={query + currentPage}
-        fallback={<FightersTableSkeleton />}
-      >
-        <FightersTable
-          query={query}
-          currentPage={currentPage}
-          sort={sort}
-          weightClass={weightClass}
-        />
-      </Suspense>
+      <FightersTable
+        query={query}
+        currentPage={currentPage}
+        sort={sort}
+        weightClass={weightClass}
+      />
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={totalPages} />
       </div>

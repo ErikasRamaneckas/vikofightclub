@@ -5,6 +5,7 @@ import Pagination from '@/app/components/fighters/pagination';
 import Search from '@/app/components/search';
 import { CreateFight } from '@/app/components/fights/buttons';
 import { auth } from '@/auth';
+import ClearFiltersButton from '@/app/components/clear';
 
 export const metadata: Metadata = {
   title: 'Fights',
@@ -30,6 +31,7 @@ export default async function FightsPage(props: {
       <h1 className="text-2xl mb-4">Fights</h1>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Search fighters..." />
+        <ClearFiltersButton />
         {isAdmin && <CreateFight />}
       </div>
       <FightsTable
