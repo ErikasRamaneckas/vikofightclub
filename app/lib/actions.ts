@@ -252,3 +252,76 @@ export async function createFight(
   revalidatePath('/dashboard/fights');
   redirect('/dashboard/fights');
 }
+
+export async function updateFight(
+  id: string,
+  prevState: FightState,
+  formData: FormData
+) {
+  const location = formData.get('location');
+  const date = formData.get('date');
+
+  const fightersRaw = formData.get('fighters') as string;
+  let fighters;
+  try {
+    fighters = JSON.parse(fightersRaw);
+  } catch {
+    return {
+      message: 'Invalid fighters format',
+    };
+  }
+
+  const validated = FightFormSchema.safeParse({
+    location,
+    date,
+    fighters,
+  });
+
+  if (!validated.success) {
+    return {
+      errors: validated.error.flatten().fieldErrors,
+      message: 'Validation failed.',
+    };
+  }
+
+  const {
+    location: validLocation,
+    date: validDate,
+    fighters: validFighters,
+  } = validated.data;
+
+  try {
+    // Update the fight's base info
+    await sql`
+      UPDATE fights
+      SET location = ${validLocation}, date = ${validDate}
+      WHERE id = ${id};
+    `;
+
+    // Remove previous fighters linked to this fight
+    await sql`
+      DELETE FROM fighter_fights WHERE fight_id = ${id};
+    `;
+
+    // Insert updated fighter list
+    for (const fighter of validFighters) {
+      await sql`
+        INSERT INTO fighter_fights (fight_id, fighter_id, result)
+        VALUES (${id}, ${fighter.fighter_id}, ${fighter.result});
+      `;
+    }
+  } catch (error) {
+    console.error(error);
+    return {
+      message: 'Database error: Failed to update fight.',
+    };
+  }
+
+  revalidatePath('/dashboard/fights');
+  redirect('/dashboard/fights');
+}
+
+export async function deleteFight(id: string) {
+  await sql`DELETE FROM fights WHERE id = ${id}`;
+  revalidatePath('/dashboard/fights');
+}

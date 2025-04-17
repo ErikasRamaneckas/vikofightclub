@@ -1,6 +1,25 @@
 import { sql } from '@vercel/postgres';
 import { User } from './definitions';
 
+export async function fetchFighters() {
+  try {
+    const result = await sql`
+      SELECT
+        id,
+        name,
+        email,
+        image_url,
+        height,
+        weight
+      FROM users
+    `;
+    return result.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch fighters.');
+  }
+}
+
 const ITEMS_PER_PAGE = 5;
 export async function fetchFilteredFighters(
   query: string,
@@ -204,4 +223,21 @@ export async function fetchFightsPages(query: string = '') {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch total number of fights');
   }
+}
+
+export async function fetchFightById(id: string) {
+  const fightResult = await sql`
+    SELECT * FROM fights WHERE id = ${id}
+  `;
+
+  const fightersResult = await sql`
+    SELECT ff.fighter_id as id, ff.result
+    FROM fighter_fights ff
+    WHERE ff.fight_id = ${id}
+  `;
+
+  return {
+    ...fightResult.rows[0],
+    fighters: fightersResult.rows,
+  };
 }
