@@ -23,6 +23,7 @@ const links = [
     icon: Upload,
   },
 ];
+
 export default function NavLinks() {
   const pathname = usePathname();
 
@@ -35,9 +36,10 @@ export default function NavLinks() {
             key={link.name}
             href={link.href}
             className={clsx(
-              'flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-pink-100 hover:text-pink-600 md:flex-none md:justify-start md:p-2 md:px-3',
+              'flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 dark:bg-gray-800 p-3 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-pink-100 hover:text-pink-600 dark:hover:bg-pink-900 dark:hover:text-pink-300 md:flex-none md:justify-start md:p-2 md:px-3',
               {
-                'bg-pink-100 text-pink-600': pathname === link.href,
+                'bg-pink-100 text-pink-600 dark:bg-pink-900 dark:text-pink-300':
+                  pathname === link.href,
               }
             )}
           >

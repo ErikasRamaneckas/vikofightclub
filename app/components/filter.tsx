@@ -29,13 +29,13 @@ export default function WeightClassFilter() {
   return (
     <select
       name="weightClass"
-      className="rounded-md border p-2"
+      className="rounded-md border border-gray-200 bg-white text-gray-900 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 p-2"
       value={currentWeightClass}
       onChange={handleWeightClassChange}
     >
       <option value="">All Weight Classes</option>
       <option value="light">Light (&lt; 70kg)</option>
-      <option value="middle">Middle (71-85kg)</option>
+      <option value="middle">Middle (71–85kg)</option>
       <option value="heavy">Heavy (85kg+)</option>
     </select>
   );

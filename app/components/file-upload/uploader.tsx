@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from 'react';
 import toast from 'react-hot-toast';
 import { upload } from '@vercel/blob/client';
-import ProgressBar from '@/app/components/file-upload/progress-bar';
+import ProgressBar from './progress-bar';
 
 export default function Uploader() {
   const [preview, setPreview] = useState<string | null>(null);
@@ -56,7 +56,7 @@ export default function Uploader() {
               </div>
             </div>
           ),
-          { duration: 10000 }
+          { duration: 5000 }
         );
       } catch (error) {
         if (error instanceof Error) {
@@ -91,7 +91,7 @@ export default function Uploader() {
     <form className="grid gap-6" onSubmit={handleSubmit}>
       <div>
         <div className="space-y-1 mb-4">
-          <h2 className="text-xl text-center font-semibold">
+          <h2 className="text-xl font-semibold dark:text-gray-100">
             File Upload
           </h2>
         </div>
@@ -129,17 +129,19 @@ export default function Uploader() {
           />
           <div
             className={`${
-              dragActive ? 'border-2 border-black' : ''
+              dragActive
+                ? 'border-2 border-black dark:border-white'
+                : ''
             } absolute z-[3] flex h-full w-full flex-col items-center justify-center rounded-md px-10 transition-all ${
               preview
-                ? 'bg-white/80 opacity-0 hover:opacity-100 hover:backdrop-blur-md'
-                : 'bg-white opacity-100 hover:bg-gray-50'
+                ? 'bg-white/80 opacity-0 hover:opacity-100 hover:backdrop-blur-md dark:bg-gray-800/80'
+                : 'bg-white opacity-100 hover:bg-gray-50 dark:bg-gray-800'
             }`}
           >
             <svg
               className={`${
                 dragActive ? 'scale-110' : 'scale-100'
-              } h-7 w-7 text-gray-500 transition-all duration-75 group-hover:scale-110 group-active:scale-95`}
+              } h-7 w-7 text-gray-500 transition-all duration-75 group-hover:scale-110 group-active:scale-95 dark:text-gray-400`}
               xmlns="http://www.w3.org/2000/svg"
               width="24"
               height="24"
@@ -155,10 +157,10 @@ export default function Uploader() {
               <path d="M12 12v9" />
               <path d="m16 16-4-4-4 4" />
             </svg>
-            <p className="mt-2 text-center text-sm text-gray-500">
+            <p className="mt-2 text-center text-sm text-gray-500 dark:text-gray-400">
               Drag and drop or click to upload.
             </p>
-            <p className="mt-2 text-center text-sm text-gray-500">
+            <p className="mt-2 text-center text-sm text-gray-500 dark:text-gray-400">
               Max file size: 50MB
             </p>
             <span className="sr-only">Photo upload</span>
@@ -189,25 +191,27 @@ export default function Uploader() {
         </div>
       </div>
 
-      <div className="space-y-2 flex flex-col items-center">
+      <div className="space-y-2">
         {isUploading && <ProgressBar value={progress} />}
 
-        <button
-          type="submit"
-          disabled={isUploading || !file}
-          className="flex h-10 items-center rounded-lg bg-pink-600 px-4 text-sm font-medium text-white transition-colors hover:bg-pink-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-600 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-200"
-        >
-          Upload
-        </button>
+        <div className="flex justify-center items-center gap-5">
+          <button
+            type="submit"
+            disabled={isUploading || !file}
+            className="h-10 rounded-lg bg-pink-600 px-4 text-sm font-medium text-white hover:bg-pink-400 transition-colors disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
+          >
+            Upload
+          </button>
 
-        <button
-          type="reset"
-          onClick={reset}
-          disabled={isUploading || !file}
-          className="flex h-10 items-center rounded-lg bg-pink-100 px-4 text-sm font-medium text-gray-700 transition-colors hover:bg-pink-200 hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-600 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-200"
-        >
-          Reset
-        </button>
+          <button
+            type="reset"
+            onClick={reset}
+            disabled={isUploading || !file}
+            className="h-10 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400 transition-colors px-4 text-sm font-medium"
+          >
+            Reset
+          </button>
+        </div>
       </div>
     </form>
   );

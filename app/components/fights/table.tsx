@@ -14,18 +14,19 @@ export default async function FightsTable({
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
-        <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
+        <div className="rounded-lg bg-gray-50 p-2 md:pt-0 dark:bg-gray-900">
+          {/* Mobile View */}
           <div className="md:hidden">
             {fights?.map((fight) => (
               <div
                 key={fight.id}
-                className="mb-2 w-full rounded-md bg-white p-4"
+                className="mb-2 w-full rounded-md bg-white p-4 dark:bg-gray-800"
               >
-                <div className="flex items-center justify-between border-b pb-4">
-                  <p className="text-sm text-gray-500">
+                <div className="flex items-center justify-between border-b pb-4 border-gray-200 dark:border-gray-700">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
                     {new Date(fight.date).toLocaleString()}
                   </p>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
                     {fight.location}
                   </p>
                 </div>
@@ -35,14 +36,16 @@ export default async function FightsTable({
                       key={fighter.id}
                       className={`flex justify-between rounded px-2 py-1 ${
                         fighter.result === 'win'
-                          ? 'bg-green-100'
+                          ? 'bg-green-100 dark:bg-green-800/40'
                           : fighter.result === 'loss'
-                          ? 'bg-red-100'
-                          : 'bg-gray-100'
+                          ? 'bg-red-100 dark:bg-red-800/40'
+                          : 'bg-gray-100 dark:bg-gray-700'
                       }`}
                     >
-                      <span>{fighter.name}</span>
-                      <span className="capitalize text-gray-700">
+                      <span className="text-gray-800 dark:text-gray-100">
+                        {fighter.name}
+                      </span>
+                      <span className="capitalize text-gray-700 dark:text-gray-300">
                         {fighter.result || 'n/a'}
                       </span>
                     </li>
@@ -52,19 +55,21 @@ export default async function FightsTable({
             ))}
           </div>
 
-          <table className="hidden min-w-full text-gray-900 md:table">
+          {/* Desktop View */}
+          <table className="hidden min-w-full text-gray-900 md:table dark:text-gray-100">
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
                 <th className="px-3 py-5 font-medium">Date</th>
                 <th className="px-3 py-5 font-medium">Location</th>
                 <th className="px-3 py-5 font-medium">Fighters</th>
+                <th className="px-3 py-5 font-medium"></th>
               </tr>
             </thead>
-            <tbody className="bg-white text-sm">
+            <tbody className="bg-white dark:bg-gray-800 text-sm">
               {fights?.map((fight) => (
                 <tr
                   key={fight.id}
-                  className="border-b last-of-type:border-none"
+                  className="border-b last-of-type:border-none border-gray-200 dark:border-gray-700"
                 >
                   <td className="whitespace-nowrap px-3 py-3">
                     {new Date(fight.date).toLocaleString()}
@@ -80,14 +85,16 @@ export default async function FightsTable({
                             key={fighter.id}
                             className={`flex justify-between rounded px-2 py-1 ${
                               fighter.result === 'win'
-                                ? 'bg-green-100'
+                                ? 'bg-green-100 dark:bg-green-800/40'
                                 : fighter.result === 'loss'
-                                ? 'bg-red-100'
-                                : 'bg-gray-100'
+                                ? 'bg-red-100 dark:bg-red-800/40'
+                                : 'bg-gray-100 dark:bg-gray-700'
                             }`}
                           >
-                            <span>{fighter.name}</span>
-                            <span className="capitalize text-gray-700">
+                            <span className="text-gray-800 dark:text-gray-100">
+                              {fighter.name}
+                            </span>
+                            <span className="capitalize text-gray-700 dark:text-gray-300">
                               {fighter.result || 'n/a'}
                             </span>
                           </li>
