@@ -27,7 +27,14 @@ export default async function FightsTable({
               >
                 <div className="flex items-center justify-between border-b pb-4 border-gray-200 dark:border-gray-700">
                   <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {new Date(fight.date).toLocaleString()}
+                    {new Date(fight.date).toLocaleDateString(
+                      'lt-LT',
+                      {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                      }
+                    )}
                   </p>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
                     {fight.location}
@@ -81,7 +88,14 @@ export default async function FightsTable({
                   className="border-b last-of-type:border-none border-gray-200 dark:border-gray-700"
                 >
                   <td className="whitespace-nowrap px-3 py-3">
-                    {new Date(fight.date).toLocaleString()}
+                    {new Date(fight.date).toLocaleDateString(
+                      'lt-LT',
+                      {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                      }
+                    )}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {fight.location}
