@@ -176,7 +176,7 @@ const FightFormSchema = z.object({
     .array(
       z.object({
         fighter_id: z.string().uuid(),
-        result: z.enum(['win', 'loss', 'draw']),
+        result: z.enum(['win', 'loss']),
       })
     )
     .min(2, 'At least two fighters required'),
@@ -291,19 +291,16 @@ export async function updateFight(
   } = validated.data;
 
   try {
-    // Update the fight's base info
     await sql`
       UPDATE fights
       SET location = ${validLocation}, date = ${validDate}
       WHERE id = ${id};
     `;
 
-    // Remove previous fighters linked to this fight
     await sql`
       DELETE FROM fighter_fights WHERE fight_id = ${id};
     `;
 
-    // Insert updated fighter list
     for (const fighter of validFighters) {
       await sql`
         INSERT INTO fighter_fights (fight_id, fighter_id, result)

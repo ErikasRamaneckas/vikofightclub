@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useActionState } from 'react';
 import { createFight, FightState } from '@/app/lib/actions';
 import { users } from '@/app/lib/placeholder-data'; // Update as needed
-import { Calendar, MapPin } from 'lucide-react';
+import { Calendar, MapPin, CircleUserRound } from 'lucide-react';
 
 export default function CreateFightForm() {
   const initialState: FightState = { message: null, errors: {} };
